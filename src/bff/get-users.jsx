@@ -1,3 +1,5 @@
-export const getUsers = () => {
-	fetch('http://localhost:3000/users').then((loadedUsers) => loadedUsers.json());
+export const getUsers = async () => {
+	const res = await fetch('http://localhost:3000/users');
+	const users = await res.json();
+	return users;
 };

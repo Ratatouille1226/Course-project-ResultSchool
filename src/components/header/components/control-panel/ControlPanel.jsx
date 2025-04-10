@@ -1,6 +1,10 @@
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import { Icon } from '../../../../components/index';
+import { useSelector, useDispatch } from 'react-redux';
+import { Icon, Button } from '../../../../components/index';
+import { selectUserLogin, selectUserRole, selectUserSession } from '../../../../selectors';
+import { ROLE } from '../../../../constants';
+import { logout } from '../../../../actions';
 
 const RightAligned = styled.div`
 	display: flex;
@@ -9,31 +13,38 @@ const RightAligned = styled.div`
 	margin-top: 7px;
 `;
 
-const StyledLink = styled(Link)`
-	width: 100px;
-	height: 32px;
-	font-size: 16px;
-	cursor: pointer;
-	border-radius: 5px;
-	border: none;
-	background-color: #fff;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	text-decoration: none;
-	color: black;
-`;
 const DivBack = styled.div`
 	cursor: pointer;
+`;
+const UserName = styled.div`
+	color: #fff;
+	font-size: 22px;
+	font-weight: 700;
 `;
 
 const ControlPanelContainer = ({ className }) => {
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
+	//Получаем данные пользователя чтобы применить условный рендеринг (авторизован пользователь или нет)
+	const roleId = useSelector(selectUserRole);
+	const login = useSelector(selectUserLogin);
+	const session = useSelector(selectUserSession);
 
 	return (
 		<div className={className}>
 			<RightAligned>
-				<StyledLink to="/login">Войти</StyledLink>
+				{roleId === ROLE.GUEST ? (
+					<Button>
+						<Link to="/login">Войти</Link>
+					</Button>
+				) : (
+					<>
+						<UserName>{login}</UserName>
+						<DivBack onClick={() => dispatch(logout(session))}>
+							<Icon id={'fa-sign-out'} color={'#ff4f4f'} />
+						</DivBack>
+					</>
+				)}
 			</RightAligned>
 			<RightAligned>
 				<DivBack onClick={() => navigate(-1)}>

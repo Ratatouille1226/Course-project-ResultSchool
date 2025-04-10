@@ -1,8 +1,12 @@
 import { findUser } from './find-user';
 import { addUser } from './add-user';
-import { createSession } from './create-session';
+import { sessions } from './sessions';
 
 export const server = {
+	async logout(session) {
+		sessions.remove(session);
+	},
+
 	async authorize(authLogin, authPassword) {
 		//Получение пользователей по логину
 		const user = await findUser(authLogin);
@@ -26,7 +30,12 @@ export const server = {
 		//Возвращаем действия авторизованного пользователя
 		return {
 			error: null,
-			res: createSession(user.role_id),
+			res: {
+				id: user.id,
+				login: user.login,
+				roleId: user.role_id,
+				session: sessions.create(user),
+			},
 		};
 	},
 
@@ -46,7 +55,12 @@ export const server = {
 
 		return {
 			error: null,
-			res: createSession(user.role_id),
+			res: {
+				id: user.id,
+				login: user.login,
+				roleId: user.role_id,
+				session: sessions.create(user),
+			},
 		};
 	},
 };

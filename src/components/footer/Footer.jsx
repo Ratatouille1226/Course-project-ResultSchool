@@ -30,7 +30,13 @@ const FooterContainer = ({ className }) => {
 					{new Date().toLocaleString('ru', { day: 'numeric', month: 'long' })}
 				</div>
 				<div>
-					{temperature} градусов, {weather}
+					{temperature}{' '}
+					{temperature === 1
+						? 'Градус'
+						: temperature >= 2 && temperature <= 4
+							? 'Градуса'
+							: 'Градусов'}
+					, {weather}
 				</div>
 			</div>
 		</div>

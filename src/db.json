@@ -5,13 +5,19 @@
       "login": "andrey",
       "password": "qwerty123",
       "registed_at": "2025-03-16",
-      "role_id": 0
+      "roleId": 0
     },
     {
       "id": "61ee",
       "login": "kolya",
       "password": "123123",
-      "role_id": 2
+      "roleId": 2
+    },
+    {
+      "id": "3fa9",
+      "login": "ratatouille",
+      "password": "123123",
+      "roleId": 2
     }
   ],
   "roles": [
@@ -55,5 +61,26 @@
       "published_at": "2025-03-21"
     }
   ],
-  "comments": []
+  "comments": [
+	{
+		"author": "andrey",
+		"post_id": "001",
+		"publishedAt": "2025-03-21",
+		"content": "Мой первый комментарий",
+		"id": 1
+	}
+  ],
+  "sessions": [
+    {
+      "id": "1e14",
+      "hash": "0.47897090633217365152063393907155841588973999023438",
+      "user": {
+        "id": "001",
+        "login": "andrey",
+        "password": "qwerty123",
+        "registed_at": "2025-03-16",
+        "role_id": 0
+      }
+    }
+  ]
 }

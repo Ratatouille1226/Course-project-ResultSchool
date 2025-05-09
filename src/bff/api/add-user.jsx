@@ -1,4 +1,4 @@
-import { generateDate } from './generate-date';
+import { generateDate } from '../utils';
 
 export const addUser = (regLogin, regPassword) =>
 	//Создание пользователя (добавления в базу данных)
@@ -9,6 +9,6 @@ export const addUser = (regLogin, regPassword) =>
 			login: regLogin,
 			password: regPassword,
 			registed_at: generateDate(),
-			role_id: 2,
+			roleId: 2,
 		}),
 	}).then((createdUser) => createdUser.json());

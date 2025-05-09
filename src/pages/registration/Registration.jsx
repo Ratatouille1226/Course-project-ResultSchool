@@ -70,10 +70,12 @@ export const RegistrationContainer = ({ className }) => {
 			}
 
 			dispatch(setUser(res));
+			sessionStorage.setItem('userData', JSON.stringify(res));
 		});
 	};
 	//Сообщение ошибки
-	const formError = errors?.login?.message || errors?.password?.message || errors?.passcheck?.message; //Разделил ошибки чтобы не блокировать кнопку в случае ошибки на сервере а не в форме
+	const formError =
+		errors?.login?.message || errors?.password?.message || errors?.passcheck?.message; //Разделил ошибки чтобы не блокировать кнопку в случае ошибки на сервере а не в форме
 	const errorMessage = formError || serverError;
 
 	//Если роль не гость а любая другая, то переносим пользователя с авторизации на главную

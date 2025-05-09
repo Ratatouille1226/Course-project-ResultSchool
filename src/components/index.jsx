@@ -4,3 +4,4 @@ export * from './footer/Footer';
 export * from './input/Input';
 export * from './button/button';
 export * from './h2/H2';
+export * from './content/Content';

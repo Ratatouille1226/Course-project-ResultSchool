@@ -5,3 +5,4 @@ export * from './fetch-roles';
 export * from './fetch-users';
 export * from './fetch-post';
 export * from './add-post-comment';
+export * from './save-post';

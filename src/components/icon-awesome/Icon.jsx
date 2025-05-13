@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
 //Выносим icon в отдельный компонент чтобы сохранился "class" и постоянно не прописывать по новой там где нужно использовать иконку
-const IconContainer = ({ className, id }) => {
+const IconContainer = ({ className, id, onClick }) => {
 	return (
 		<div className={className}>
-			<i className={`fa-solid ${id}`}></i>
+			<i onClick={onClick} className={`fa-solid ${id}`}></i>
 		</div>
 	);
 };

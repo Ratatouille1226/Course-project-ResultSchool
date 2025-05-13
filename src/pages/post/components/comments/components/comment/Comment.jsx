@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const CommentContainer = ({ className, id, author, publishedAt, content }) => {
+const CommentContainer = ({ className, author, publishedAt, content }) => {
 	return (
 		<div className={className}>
 			<div className="information-panel">

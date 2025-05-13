@@ -1,7 +1,13 @@
+import { useNavigate } from 'react-router-dom';
 import { H2, Icon } from '../../../../components';
 import styled from 'styled-components';
 
-const PostContentContainer = ({ className, post: { title, imageUrl, content, publishedAt } }) => {
+const PostContentContainer = ({
+	className,
+	post: { id, title, imageUrl, content, publishedAt },
+}) => {
+	const navigate = useNavigate();
+
 	return (
 		<div className={className}>
 			<img src={imageUrl || null} alt={title} />
@@ -13,10 +19,16 @@ const PostContentContainer = ({ className, post: { title, imageUrl, content, pub
 				</div>
 				<div className="buttons">
 					<Icon id={'fa-trash'} color={'red'} margin="0 10px 0 0" size={'18px'} />
-					<Icon id={'fa-pen-to-square'} color={'blue'} margin="0 10px" size={'18px'} />
+					<Icon
+						id={'fa-pen-to-square'}
+						color={'blue'}
+						margin="0 10px"
+						size={'18px'}
+						onClick={() => navigate(`/post/${id}/edit`)}
+					/>
 				</div>
 			</div>
-			<div>{content}</div>
+			<div className="post-text">{content}</div>
 		</div>
 	);
 };
@@ -40,5 +52,8 @@ export const PostContent = styled(PostContentContainer)`
 	& .buttons {
 		display: flex;
 		font-size: 11px;
+	}
+	& .post-text {
+		color: white;
 	}
 `;

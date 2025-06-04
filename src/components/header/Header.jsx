@@ -1,23 +1,21 @@
 import styled from 'styled-components';
+import { ControlPanel, Logo } from './components';
 
-import { Logo, ControlPanel } from './components/index';
-
-const Description = styled.div`
-	color: #fff;
-	margin-top: 15px;
+const Discription = styled.div`
+	font-style: italic;
 `;
 
 const HeaderContainer = ({ className }) => {
 	return (
 		<header className={className}>
 			<Logo />
-			<Description>
+			<Discription>
 				Веб-технологии
 				<br />
 				Написание кода
 				<br />
 				Разбор ошибок
-			</Description>
+			</Discription>
 			<ControlPanel />
 		</header>
 	);
@@ -26,11 +24,12 @@ const HeaderContainer = ({ className }) => {
 export const Header = styled(HeaderContainer)`
 	display: flex;
 	justify-content: space-between;
-	height: 120px;
-	background-color: #240090;
-	padding: 20px 40px;
-	box-shadow: 0px 0px 20px #0c0032;
 	position: fixed;
-	width: 1000px;
 	top: 0;
+	width: 1000px;
+	height: 120px;
+	padding: 20px 40px;
+	background-color: #fff;
+	box-shadow: -8px -2px 15px #000;
+	z-index: 10;
 `;

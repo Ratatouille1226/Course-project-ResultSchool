@@ -1,17 +1,21 @@
+import PropTypes from 'prop-types';
 import { useState } from 'react';
-import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from '../../../../components';
 import { Comment } from './components';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectUserId } from '../../../../selectors';
+import { selectUserId, selectUserRole } from '../../../../selectors';
 import { useServerRequest } from '../../../../hooks';
-import { addCommentAsync } from '../../../../actions';
+import { addCommentAsync } from '../../../../action';
+import { PROP_TYPE, ROLE } from '../../../../constants';
+import styled from 'styled-components';
 
-const CommentContainer = ({ className, comments, postId }) => {
+const CommentsContainer = ({ className, comments, postId }) => {
 	const [newComment, setNewComment] = useState('');
-	const userId = useSelector(selectUserId);
 	const dispatch = useDispatch();
+	const userId = useSelector(selectUserId);
 	const requestServer = useServerRequest();
+	const userRole = useSelector(selectUserRole);
+	const isGuest = userRole === ROLE.GUEST;
 
 	const onNewCommentAdd = (userId, postId, content) => {
 		dispatch(addCommentAsync(requestServer, userId, postId, content));
@@ -20,25 +24,28 @@ const CommentContainer = ({ className, comments, postId }) => {
 
 	return (
 		<div className={className}>
-			<div className="new-comment">
-				<textarea
-					name="comment"
-					value={newComment}
-					placeholder="Комментарий..."
-					onChange={({ target }) => setNewComment(target.value)}
-				></textarea>
-				<Icon
-					id={'fa-paper-plane'}
-					color={'#fff'}
-					margin="0 10px 0 0"
-					size={'18px'}
-					onClick={() => onNewCommentAdd(userId, postId, newComment)}
-				/>
-			</div>
+			{!isGuest && (
+				<div className="new-comment">
+					<textarea
+						name="comment"
+						value={newComment}
+						placeholder="Комментарий..."
+						onChange={({ target }) => setNewComment(target.value)}
+					></textarea>
+					<Icon
+						id="fa-paper-plane-o"
+						margin="0 0 0 10px"
+						size="22px"
+						onClick={() => onNewCommentAdd(userId, postId, newComment)}
+					/>
+				</div>
+			)}
+
 			<div className="comments">
 				{comments.map(({ id, author, content, publishedAt }) => (
 					<Comment
 						key={id}
+						postId={postId}
 						id={id}
 						author={author}
 						content={content}
@@ -50,27 +57,25 @@ const CommentContainer = ({ className, comments, postId }) => {
 	);
 };
 
-export const Comments = styled(CommentContainer)`
-	display: flex;
-	justify-content: center;
-	flex-direction: column;
-	margin: 40px 150px;
-	gap: 20px;
+export const Comments = styled(CommentsContainer)`
+	margin: 0 auto;
+	width: 580px;
 
 	& .new-comment {
 		display: flex;
-		gap: 10px;
+		width: 100%;
+		margin: 20px 0 0;
 	}
 
 	& .new-comment textarea {
-		width: 580px;
-		height: 100px;
-		border-radius: 5px;
-		padding: 10px 20px;
-		font-size: 14px;
-	}
-
-	& .comments {
-		color: white;
+		width: 550px;
+		height: 120px;
+		font-size: 18px;
+		resize: none;
 	}
 `;
+
+Comments.propTypes = {
+	comments: PropTypes.arrayOf(PROP_TYPE.COMMENT).isRequired,
+	postId: PropTypes.string.isRequired,
+};

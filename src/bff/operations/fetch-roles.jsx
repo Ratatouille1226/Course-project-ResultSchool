@@ -1,23 +1,23 @@
 import { getRoles } from '../api';
-import { ROLE } from '../constants/role';
 import { sessions } from '../sessions';
+import { ROLE } from '../constants';
 
 export const fetchRoles = async (hash) => {
 	const accessRoles = [ROLE.ADMIN];
 
-	//Отправляем сессию для проверки доступа пользователю к управлению пользователями
 	const access = await sessions.access(hash, accessRoles);
+
 	if (!access) {
 		return {
-			error: 'Доступ запрещён',
-			res: null,
+			error: 'Доступ запрещен',
+			response: null,
 		};
 	}
-	//Создание пользователя (добавления в базу данных)
+
 	const roles = await getRoles();
 
 	return {
 		error: null,
-		res: roles,
+		response: roles,
 	};
 };

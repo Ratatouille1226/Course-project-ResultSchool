@@ -1,27 +1,30 @@
 import { Routes, Route } from 'react-router-dom';
-import { Header, Footer } from './components/index';
-import { Authorization, Post, Registration, Users } from './pages/index';
-import styled from 'styled-components';
+import { Error, Header, Footer, Modal } from './components';
+import { Authorization, Post, Registration, Users, Main } from './pages';
+import { ERROR } from './constants';
 import { useLayoutEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { setUser } from './actions';
+import { setUser } from './action';
+import styled from 'styled-components';
 
 const AppColumn = styled.div`
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+	position: relative;
 	width: 1000px;
 	min-height: 100%;
 	margin: 0 auto;
-	background-color: #190061;
+	background-color: #fff;
 `;
+
 const Page = styled.div`
-	padding: 120px 0px;
+	padding: 120px 0 20px;
 `;
 
 export const Blog = () => {
 	const dispatch = useDispatch();
-	//Запоминаем авторизованного пользователя после обновления страницы
+
 	useLayoutEffect(() => {
 		const currentUserDataJSON = sessionStorage.getItem('userData');
 
@@ -44,17 +47,18 @@ export const Blog = () => {
 			<Header />
 			<Page>
 				<Routes>
-					<Route path="/" element={<div>Главная страница</div>} />
+					<Route path="/" element={<Main />} />
 					<Route path="/login" element={<Authorization />} />
 					<Route path="/register" element={<Registration />} />
 					<Route path="/users" element={<Users />} />
-					<Route path="/post" element={<div>Новая статья</div>} />
+					<Route path="/post" element={<Post />} />
 					<Route path="/post/:id" element={<Post />} />
 					<Route path="/post/:id/edit" element={<Post />} />
-					<Route path="*" element={<div>Ошибка</div>} />
+					<Route path="*" element={<Error error={ERROR.PAGE_NOT_EXIST} />} />
 				</Routes>
 			</Page>
 			<Footer />
+			<Modal />
 		</AppColumn>
 	);
 };

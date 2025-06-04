@@ -1,35 +1,31 @@
+import { getUser } from '../api';
 import { sessions } from '../sessions';
-import { findUser } from '../api';
 
 export const authorize = async (authLogin, authPassword) => {
-	//Получение пользователей по логину
-	const user = await findUser(authLogin);
+	const user = await getUser(authLogin);
 
-	//Возвращаем ошибки если логин не совпадает
 	if (!user) {
 		return {
 			error: 'Такой пользователь не найден',
-			res: null,
+			response: null,
 		};
 	}
 
-	const { id, login, password, role_id } = user;
+	const { id, login, password, roleId } = user;
 
-	//Проверка совпадения пароля
 	if (authPassword !== password) {
 		return {
-			error: 'Пароль не совпадает',
-			res: null,
+			error: 'Неверный пароль',
+			response: null,
 		};
 	}
 
-	//Возвращаем действия авторизованного пользователя
 	return {
 		error: null,
-		res: {
+		response: {
 			id,
 			login,
-			role_id,
+			roleId,
 			session: sessions.create(user),
 		},
 	};

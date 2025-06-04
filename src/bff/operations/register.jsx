@@ -1,26 +1,24 @@
-import { findUser, addUser } from '../api';
+import { getUser, addUser } from '../api';
 import { sessions } from '../sessions';
 
-export const registration = async (regLogin, regPassword) => {
-	//Получение пользователей по логину
-	const existedUser = await findUser(regLogin);
+export const register = async (regLogin, regPassword) => {
+	const existedUser = await getUser(regLogin);
 
-	//Возвращаем ошибки если логин занят
 	if (existedUser) {
 		return {
 			error: 'Такой логин уже занят',
-			res: null,
+			response: null,
 		};
 	}
-	//Создание пользователя (добавления в базу данных)
+
 	const user = await addUser(regLogin, regPassword);
 
 	return {
 		error: null,
-		res: {
+		response: {
 			id: user.id,
 			login: user.login,
-			roleId: user.roleId,
+			roleId: user.role_id,
 			session: sessions.create(user),
 		},
 	};

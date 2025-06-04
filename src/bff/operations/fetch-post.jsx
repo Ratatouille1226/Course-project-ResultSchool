@@ -1,15 +1,30 @@
-import { getComments, getPost } from '../api';
+import { getPost } from '../api';
+import { getPostCommentsWithAuthor } from '../utils';
 
 export const fetchPost = async (postId) => {
-	const post = await getPost(postId);
+	let post;
+	let error;
 
-	const comments = await getComments(postId);
+	try {
+		post = await getPost(postId);
+	} catch (postError) {
+		error = postError;
+	}
+
+	if (error) {
+		return {
+			error,
+			response: null,
+		};
+	}
+
+	const commentsWithAuthor = await getPostCommentsWithAuthor(postId);
 
 	return {
 		error: null,
-		res: {
+		response: {
 			...post,
-			comments,
+			comments: commentsWithAuthor,
 		},
 	};
 };

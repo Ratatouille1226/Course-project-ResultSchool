@@ -8,21 +8,20 @@ const FooterContainer = ({ className }) => {
 
 	useEffect(() => {
 		fetch(
-			'https://api.openweathermap.org/data/2.5/weather?q=Moscow&units=metric&lang=ru&appid=699abd7bdc958c4f820cfea1da62167e',
+			'https://api.openweathermap.org/data/2.5/weather?q=Moscow&units=metric&lang=ru&appid=ece714116b020834730da639f555e1d7',
 		)
-			.then((res) => res.json())
+			.then((response) => response.json())
 			.then(({ name, main, weather }) => {
 				setCity(name);
 				setTemperature(Math.round(main.temp));
 				setWeather(weather[0].description);
 			});
 	}, []);
-
 	return (
 		<div className={className}>
 			<div>
 				<div>Блог веб-разработчика</div>
-				<div>frontend@mail.ru</div>
+				<div>web@developer.ru</div>
 			</div>
 			<div>
 				<div>
@@ -30,13 +29,7 @@ const FooterContainer = ({ className }) => {
 					{new Date().toLocaleString('ru', { day: 'numeric', month: 'long' })}
 				</div>
 				<div>
-					{temperature}{' '}
-					{temperature === 1
-						? 'Градус'
-						: temperature >= 2 && temperature <= 4
-							? 'Градуса'
-							: 'Градусов'}
-					, {weather}
+					{temperature} градусов, {weather}
 				</div>
 			</div>
 		</div>
@@ -47,11 +40,10 @@ export const Footer = styled(FooterContainer)`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding: 0px 50px;
-	text-align: center;
-	height: 100px;
 	width: 1000px;
-	background-color: #240090;
-	box-shadow: 0px 0px 20px #0c0032;
-	color: white;
+	height: 120px;
+	padding: 20px 40px;
+	font-weight: bold;
+	background-color: #fff;
+	box-shadow: -8px 2px 15px #000;
 `;

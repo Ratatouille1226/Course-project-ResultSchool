@@ -1,8 +1,9 @@
-import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import { styled } from 'styled-components';
 
-const ButtonContainer = ({ children, className, width, ...props }) => {
+const ButtonContainer = ({ children, clasName, width, ...props }) => {
 	return (
-		<button className={className} {...props}>
+		<button className={clasName} {...props}>
 			{children}
 		</button>
 	);
@@ -10,19 +11,20 @@ const ButtonContainer = ({ children, className, width, ...props }) => {
 
 export const Button = styled(ButtonContainer)`
 	width: ${({ width = '100%' }) => width};
-	height: 32px;
-	font-size: 16px;
-	cursor: pointer;
-	border-radius: 5px;
-	border: none;
-	background-color: #fff;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	text-decoration: none;
-	color: black;
+	font-size: 18px;
+	height: 32px;
+	border: 1px solid black;
+	background-color: #eee;
 
 	&:hover {
-		cursor: pointer;
+		cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
 	}
 `;
+
+Button.PropTypes = {
+	children: PropTypes.node.isRequired,
+	width: PropTypes.string,
+};

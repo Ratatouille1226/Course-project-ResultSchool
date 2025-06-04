@@ -1,48 +1,44 @@
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link, Navigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import styled from 'styled-components';
-import { server } from '../../bff/index';
-import { Input, Button, H2 } from '../../components/index';
-import { useResetForm } from '../../hooks/index';
+import { server } from '../../bff';
 import { useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
-import { setUser } from '../../actions';
+import { AuthFormError, Input, H2, Button } from '../../components';
+import { useResetForm } from '../../hooks';
+import { setUser } from '../../action';
 import { selectUserRole } from '../../selectors';
 import { ROLE } from '../../constants';
+import { styled } from 'styled-components';
 
 const authFormSchema = yup.object().shape({
 	login: yup
 		.string()
-		.required('Введите логин.')
-		.matches(/^\w+$/, 'Неверно заполнен логин, допускаются eng буквы, цифры и _.')
-		.min(3, 'Неверно заполнен логин, минимум 3 символа.')
-		.max(20, 'Неверно заполнен логин, максимум 20 символов.'),
+		.required('Заполните логин')
+		.matches(/^\w+$/, 'Неверно заполнен логин. Допускаются только буквы и цифры')
+		.min(3, 'Неверно заполнен логин. Минимум 3 символа')
+		.max(15, 'Неверно заполнен логин. Максимум 15 символов'),
+
 	password: yup
 		.string()
-		.required('Введите пароль.')
-		.matches(/[\w_-]+$/, 'Неверно заполнен пароль, допускаются буквы, цифры и знаки: _ -')
-		.min(6, 'Пароль должен содержать минимум 6 символов.')
-		.max(20, 'Пароль должен содержать максимум 20 символов.'),
+		.required('Заполните пароль')
+		.matches(
+			/^[\w#%]+$/,
+			'Неверно заполнен пароль. Допускаются буквы, цифры, знаки # %',
+		)
+		.min(6, 'Неверно заполнен пароль. Минимум 6 символов')
+		.max(30, 'Неверно заполнен пароль. Максимум 30 символов'),
 });
 
 const StyledLink = styled(Link)`
 	text-align: center;
-	text-decoration: none;
-	color: blue;
-	margin: 20px 0px;
+	text-decoration: underline;
+	margin: 20px 0;
 	font-size: 18px;
 `;
-const ErrorMessage = styled.div`
-	background-color: #fcadad;
-	font-size: 16px;
-	margin: 10px 0px;
-	padding: 5px 10px;
-	border-radius: 5px;
-`;
 
-export const AuthorizationContainer = ({ className }) => {
+const AuthorizationContainer = ({ className }) => {
 	const {
 		register,
 		reset,
@@ -55,30 +51,30 @@ export const AuthorizationContainer = ({ className }) => {
 		},
 		resolver: yupResolver(authFormSchema),
 	});
+
 	const [serverError, setServerError] = useState(null);
+
 	const dispatch = useDispatch();
-	//Получаем роль пользователя, если автозировался переносим его на главную
+
 	const roleId = useSelector(selectUserRole);
 
-	//Сброс формы после нажатия кнопки авторизоваться, сделал в кастомном хуке потому что в авторизации и регистрации одинаковый способ
 	useResetForm(reset);
 
-	//Обращаемся к bff, наш локальный сервер)
 	const onSubmit = ({ login, password }) => {
-		server.authorize(login, password).then(({ error, res }) => {
+		server.authorize(login, password).then(({ error, response }) => {
 			if (error) {
-				setServerError(`Ошибка сервера: ${error}`);
+				setServerError(`Ошибка запроса: ${error}`);
 				return;
 			}
 
-			dispatch(setUser(res));
+			dispatch(setUser(response));
+			sessionStorage.setItem('userData', JSON.stringify(response));
 		});
 	};
-	//Сообщение ошибки
-	const formError = errors?.login?.message || errors?.password?.message; //Разделил ошибки чтобы не блокировать кнопку в случае ошибки на сервере а не в форме
+
+	const formError = errors?.login?.message || errors?.password?.message;
 	const errorMessage = formError || serverError;
 
-	//Если роль не гость а любая другая, то переносим пользователя с авторизации на главную
 	if (roleId !== ROLE.GUEST) {
 		return <Navigate to="/" />;
 	}
@@ -89,19 +85,20 @@ export const AuthorizationContainer = ({ className }) => {
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Input
 					type="text"
-					placeholder="Введите логин"
-					{...register('login', { onchange: () => setServerError(null) })}
-				/>
+					placeholder="Логин...."
+					{...register('login', { onChange: () => setServerError(null) })}
+				></Input>
 				<Input
 					type="password"
-					placeholder="Введите пароль"
-					{...register('password', { onchange: () => setServerError(null) })}
-				/>
+					placeholder="Пароль...."
+					
+					{...register('password', { onChange: () => setServerError(null) })}
+				></Input>
 				<Button type="submit" disabled={!!formError}>
 					Авторизоваться
 				</Button>
-				{errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-				<StyledLink to="/register">Зарегистрироваться</StyledLink>
+				{errorMessage && <AuthFormError>{errorMessage}</AuthFormError>}
+				<StyledLink to="/register">Регистрация</StyledLink>
 			</form>
 		</div>
 	);
@@ -109,8 +106,8 @@ export const AuthorizationContainer = ({ className }) => {
 
 export const Authorization = styled(AuthorizationContainer)`
 	display: flex;
-	flex-direction: column;
 	align-items: center;
+	flex-direction: column;
 
 	& > form {
 		display: flex;
